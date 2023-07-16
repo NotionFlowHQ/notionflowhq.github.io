@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        #id-token {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-width: 100%;
+            overflow-wrap: break-word;
+        }
+    </style>
+    <title>Firebase Token Generator</title>
+</head>
+
+<body>
+    <h1>Firebase Token Generator</h1>
+
+    <form id="login-form">
+        <label for="email">Email:</label>
+        <input type="email" id="email" required><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" required><br><br>
+        <button type="submit">Log in</button>
+    </form>
+
+    <div id="token-container" style="display: none;">
+        <h2>ID Token:</h2>
+        <pre id="id-token"></pre>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, getIdToken } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC42BobAMqFaqO-K4AUSzd0vosmYJMObhk",
+            authDomain: "notionflow.firebaseapp.com",
+            projectId: "google-cloud-firestore-emulator",
+            storageBucket: "notionflow.appspot.com",
+            messagingSenderId: "996888910901",
+            appId: "1:996888910901:web:02904f71dd3ed8283d657c",
+            measurementId: "G-0F7BGSYTVX"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const idToken = await getIdToken(userCredential.user);
+                document.getElementById('id-token').innerText = idToken;
+                document.getElementById('token-container').style.display = 'block';
+            } catch (error) {
+                alert('Error logging in: ' + error.message);
+            }
+        });
+    </script>
+</body>
+
+</html>
